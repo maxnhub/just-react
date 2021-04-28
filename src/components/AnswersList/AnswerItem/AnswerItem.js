@@ -1,20 +1,19 @@
-import React, {Component} from 'react'
+import React from 'react'
 import classes from './AnswerItem.module.css'
 
 const AnswerItem = props => {
-
     const cls = [classes.AnswerItem]
 
-    if (props.answerState) {
-        cls.push(classes[props.answerState])
+    if (props.state) {
+        cls.push(classes[props.state])
     }
 
-    return(
+    return (
         <li
             className={cls.join(' ')}
             onClick={() => props.onAnswerClick(props.answer.id)}
         >
-            {props.answer.text}
+            { props.answer.text }
         </li>
     )
 }
