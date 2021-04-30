@@ -16,6 +16,8 @@ class Game extends Component {
             inputClasses.push('bold');
         }
 
+        console.log(this.props)
+
         // if(Math.random() > 0.7) {
         //     throw new Error('Random fail!');
         // }

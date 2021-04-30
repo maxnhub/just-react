@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
+import {withRouter} from 'react-router-dom'
 
-export default class Counter extends Component {
+class Counter extends Component {
     state = {
         counter: 0
     }
@@ -16,13 +17,23 @@ export default class Counter extends Component {
         })
     }
 
+    goToHomePage = () => {
+        this.props.history.push({
+            pathname: '/'
+        })
+    }
+
     render() {
         return (
             <React.Fragment>
                 <h2>Counter: {this.state.counter}</h2>
                 <button onClick={this.addCounter}>+</button>
                 <button onClick={this.minusCounter}>-</button>
+                <hr />
+                <button onClick={this.goToHomePage}>go To Home Page</button>
             </React.Fragment>
         )
     }
 }
+
+export default withRouter(Counter)

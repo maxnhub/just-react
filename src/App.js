@@ -3,6 +3,7 @@ import classes from './App.module.scss';
 import Game from './Game/Game';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import Counter from './Counter/Counter';
+import {Route, NavLink, Switch, Redirect} from 'react-router-dom'
 
 class App extends Component {
 
@@ -73,6 +74,42 @@ class App extends Component {
 
         return (
             <div className={classes['App']}>
+                <nav className={classes['nav']}>
+                    <ul>
+                        <li>
+                            <NavLink exact to={'/'} activeStyle={{
+                                'font-weight': 'bold',
+                                color: '#ffaa49'
+                            }}>Home</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to={'/about'} activeStyle={{
+                                'font-weight': 'bold',
+                                color: '#ffaa49'
+                            }}>About</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to={{
+                                pathname: '/counter',
+                                search: '?getparam=1&anotherparam=2',
+                                hash: 'user-hash'
+                            }} activeStyle={{
+                                'font-weight': 'bold',
+                                color: '#ffaa49'
+                            }}>Counter</NavLink>
+                        </li>
+                    </ul>
+                </nav>
+
+                <Switch>
+
+                    <Route path='/about' render={() => <h1>about page</h1>}/>
+                    <Route path='/counter' component={Counter}/>
+                    <Route path='/' exact render={() => <h1>Home page</h1>}/>
+                    {/*<Route render={() => <h1 style={{color: 'red', textAlign: 'center'}}>404 not found</h1>}/>*/}
+                    <Redirect to={'/'} />
+                </Switch>
+
                 <h1 style={divStyle}>{this.state.pageTitle}</h1>
                 <button onClick={this.handleTitle.bind(this, 'Changed!')}>change title</button>
                 <button onClick={this.toggleListHandler}>toggle list</button>
@@ -96,7 +133,6 @@ class App extends Component {
 
                 <button onClick={this.handleClick}>count clicks</button>
                 <p>Clicks counter: {this.state.clicksCounter}</p>
-                <Counter />
             </div>
         );
     }
