@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import classes from './Quiz.module.css'
 import ActiveQuiz from "../../components/ActiveQuiz/ActiveQuiz";
 import FinishedQuiz from "../../components/FinishedQuiz/FinishedQuiz";
+import axios from '../../axios/axios-quiz'
+import Loader from "../../components/UI/Loader/Loader";
 
 class Quiz extends Component {
     state = {
@@ -9,52 +11,54 @@ class Quiz extends Component {
         isFinished: false,
         activeQuestion: 0,
         answerState: null, // {[id]: 'success' 'error'}
-        quiz: [
-            {
-                question: 'Какого цвета твои мысли?',
-                rightAnswerId: 4,
-                id: 1,
-                answers: [
-                    {text: 'Непроглядной густой тьмы', id: 1},
-                    {text: 'Бирюзовых бриллиантовых лилий', id: 2},
-                    {text: 'Светлого скорого будущего', id: 3},
-                    {text: 'Желтой пламенной эйфории', id: 4}
-                ]
-            },
-            {
-                question: 'Как подчинить энергию?',
-                rightAnswerId: 3,
-                id: 2,
-                answers: [
-                    {text: 'Погладить высоковольтного щенка', id: 1},
-                    {text: 'Познать дзен в монастырях Тибета', id: 2},
-                    {text: 'Съесть мистическую четырехмерную шаверму', id: 3},
-                    {text: 'Лечь и лежать по направлению к развитию человечества', id: 4}
-                ]
-            },
-            {
-                question: 'Какого цвета мои глаза?',
-                rightAnswerId: 3,
-                id: 3,
-                answers: [
-                    {text: 'Голубые', id: 1},
-                    {text: 'Карие', id: 2},
-                    {text: 'Зеленые', id: 3},
-                    {text: 'Мандариновые', id: 4}
-                ]
-            },
-            {
-                question: 'Какой у меня любимый цвет?',
-                rightAnswerId: 2,
-                id: 4,
-                answers: [
-                    {text: 'Чёрный', id: 1},
-                    {text: 'Жёлтый', id: 2},
-                    {text: 'Красный', id: 3},
-                    {text: 'Зеленый', id: 4}
-                ]
-            }
-        ]
+        quiz: [],
+        loading: true
+        // quiz: [
+        //     {
+        //         question: 'Какого цвета твои мысли?',
+        //         rightAnswerId: 4,
+        //         id: 1,
+        //         answers: [
+        //             {text: 'Непроглядной густой тьмы', id: 1},
+        //             {text: 'Бирюзовых бриллиантовых лилий', id: 2},
+        //             {text: 'Светлого скорого будущего', id: 3},
+        //             {text: 'Желтой пламенной эйфории', id: 4}
+        //         ]
+        //     },
+        //     {
+        //         question: 'Как подчинить энергию?',
+        //         rightAnswerId: 3,
+        //         id: 2,
+        //         answers: [
+        //             {text: 'Погладить высоковольтного щенка', id: 1},
+        //             {text: 'Познать дзен в монастырях Тибета', id: 2},
+        //             {text: 'Съесть мистическую четырехмерную шаверму', id: 3},
+        //             {text: 'Лечь и лежать по направлению к развитию человечества', id: 4}
+        //         ]
+        //     },
+        //     {
+        //         question: 'Какого цвета мои глаза?',
+        //         rightAnswerId: 3,
+        //         id: 3,
+        //         answers: [
+        //             {text: 'Голубые', id: 1},
+        //             {text: 'Карие', id: 2},
+        //             {text: 'Зеленые', id: 3},
+        //             {text: 'Мандариновые', id: 4}
+        //         ]
+        //     },
+        //     {
+        //         question: 'Какой у меня любимый цвет?',
+        //         rightAnswerId: 2,
+        //         id: 4,
+        //         answers: [
+        //             {text: 'Чёрный', id: 1},
+        //             {text: 'Жёлтый', id: 2},
+        //             {text: 'Красный', id: 3},
+        //             {text: 'Зеленый', id: 4}
+        //         ]
+        //     }
+        // ]
     }
 
     onAnswerClickHandler = answerId => {
@@ -113,8 +117,18 @@ class Quiz extends Component {
         })
     }
 
-    componentDidMount() {
-        console.log('Quiz ID = ', this.props.match.params.id)
+    async componentDidMount() {
+        try {
+            const response = await axios.get(`/quizes/${this.props.match.params.id}.json`)
+            const quiz = response.data
+
+            this.setState({
+                quiz,
+                loading: false
+            })
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     render() {
@@ -123,7 +137,9 @@ class Quiz extends Component {
             <div className={classes.Quiz}>
                 <div className={classes.QuizWrapper}>
                     <h2>Ответьте на все вопросы</h2>
-                    {
+
+                    { this.state.loading ?
+                        <Loader /> :
                         this.state.isFinished ?
                             <FinishedQuiz
                                 results={this.state.results}
@@ -139,6 +155,8 @@ class Quiz extends Component {
                                 state={this.state.answerState}
                             />
                     }
+
+
 
                 </div>
             </div>
